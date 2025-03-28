@@ -62,15 +62,15 @@ void solve_warmup(FILE* ptr_in_file, char* file_name, const char* warmup_instanc
         while (idxAlice < A && idxBob < B) {
             if (alice[idxAlice] == bob[idxBob]) {
                 unionArr[idxUnion].problem = alice[idxAlice];
-                unionArr[idxUnion].allowed = 3; // ambos podem resolver
+                unionArr[idxUnion].allowed = 3; 
                 idxAlice++; idxBob++; idxUnion++;
             } else if (alice[idxAlice] < bob[idxBob]) {
                 unionArr[idxUnion].problem = alice[idxAlice];
-                unionArr[idxUnion].allowed = 1; // somente Alice
+                unionArr[idxUnion].allowed = 1; 
                 idxAlice++; idxUnion++;
             } else {
                 unionArr[idxUnion].problem = bob[idxBob];
-                unionArr[idxUnion].allowed = 2; // somente Bob
+                unionArr[idxUnion].allowed = 2; 
                 idxBob++; idxUnion++;
             }
         }
@@ -84,37 +84,31 @@ void solve_warmup(FILE* ptr_in_file, char* file_name, const char* warmup_instanc
             unionArr[idxUnion].allowed = 2;
             idxBob++; idxUnion++;
         }
-        int M = idxUnion;  // total de problemas que podem ser resolvidos
+        int M = idxUnion;  
 
         int ans;
         if (M == 0) {
             ans = 0;
         } else {
-            // Usamos DP para computar o mínimo número de trocas
-            // dpAlice[i] = mínimo número de trocas até o problema i se for resolvido por Alice
-            // dpBob[i]   = mínimo número de trocas até o problema i se for resolvido por Bob
+           
             const int INF = 1000000000;
             int *dpAlice = (int *)malloc(sizeof(int) * M);
             int *dpBob   = (int *)malloc(sizeof(int) * M);
 
-            // Inicializa o primeiro problema
             dpAlice[0] = (unionArr[0].allowed & 1) ? 0 : INF;
             dpBob[0]   = (unionArr[0].allowed & 2) ? 0 : INF;
 
-            // Calcula os estados para os problemas seguintes
             for (int i = 1; i < M; i++) {
                 dpAlice[i] = INF;
                 dpBob[i]   = INF;
                 if (unionArr[i].allowed & 1) {
-                    // Se Alice pode resolver o problema i:
-                    int op1 = dpAlice[i-1];       // continua com Alice (sem troca)
-                    int op2 = dpBob[i-1] + 1;       // troca de Bob para Alice
+                    int op1 = dpAlice[i-1];      
+                    int op2 = dpBob[i-1] + 1;       
                     dpAlice[i] = (op1 < op2) ? op1 : op2;
                 }
                 if (unionArr[i].allowed & 2) {
-                    // Se Bob pode resolver o problema i:
-                    int op1 = dpBob[i-1];         // continua com Bob (sem troca)
-                    int op2 = dpAlice[i-1] + 1;     // troca de Alice para Bob
+                    int op1 = dpBob[i-1];         
+                    int op2 = dpAlice[i-1] + 1;    
                     dpBob[i] = (op1 < op2) ? op1 : op2;
                 }
             }
@@ -123,10 +117,8 @@ void solve_warmup(FILE* ptr_in_file, char* file_name, const char* warmup_instanc
             free(dpBob);
         }
 
-        // Escreve o resultado (para o caso atual) no arquivo de solução
         fprintf(fwsolptr, "%d\n", ans);
 
-        // Libera a memória alocada para o caso atual
         free(alice);
         free(bob);
         free(unionArr);
@@ -146,21 +138,18 @@ int check_warmup_solution(const char* file_name, const char* warmup_instance) {
     strcat(answer_file, OUTPUT_DIR);
     strcat(answer_file, file_name);
 
-    // Abre o arquivo de resposta
     fanswer = fopen(answer_file, "r");
     if (fanswer == NULL) {
         printf("File '%s' can't be opened\n", answer_file);
         exit(1);
     }
 
-    // Abre o arquivo de solução gerado
     fsolution = fopen(SOLUTION_FILE, "r");
     if (fsolution == NULL) {
         printf("File '%s' can't be opened\n", SOLUTION_FILE);
         exit(1);
     }
 
-    // Compara linha a linha
     while (fgets(answer_line, 100, fanswer)) {
         fgets(solution_line, 100, fsolution);
         if (strcmp(answer_line, solution_line)) {
