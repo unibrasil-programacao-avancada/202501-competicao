@@ -49,8 +49,14 @@ Ao final, a menor resposta entre `dpAlice[M-1]` e `dpBob[M-1]` representa o meno
 
 ### Compilação
 
+Entre na pasta do projeto
 ```bash
-gcc -o warmup main.c src/warmup_solver.c
+ cd .\warmup\
+```
+
+Compile o codigo
+```bash
+gcc -Wall warmup.c solver/warmup_solver.c -o warmup
 ```
 
 
